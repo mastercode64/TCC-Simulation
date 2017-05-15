@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>TCC simulação</title>
+    </head>
+	
+    <body style="margin: 0px; overflow: hidde; background-color: #d2d2d2; padding: 30px;">
+        
+        <canvas id="canvas" width="500" height="500" style="border:1px solid red;"></canvas>
+        
+        <script>
+			//INICIALIZACAO  DO CANVAS
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+			
+			//INICIALIZACAO DAS IMAGENS
+			var green = new Image();
+			green.src = 'green.png';			
+			var transparent = new Image();
+			transparent.src = 'transparent.png';
+
+			green.onload = function(){
+				ctx.drawImage(green, 0, 0);
+			}
+			transparent.onload = function(){
+				ctx.drawImage(transparent, 0, 0);
+			}
+			
+			//INICIALIZACAO DOS OBJETOS DA SIMULACAO
+			var mapa = {
+			largura: 10,
+			altura: 10,
+			pisos : new Array()			
+			};
+
+        </script>
+        
+    </body>
+</html>
