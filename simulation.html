@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+   
+	<style>
+		body{
+			font-family: verdana;
+			font-style: normal;
+			color: white;
+		}
+		
+		#mycanvas{
+			border:1px solid red;
+			float: left;
+		}
+		
+		#mytable, #mytable tr, td {
+			background-color: yellow;
+			border: 1px solid black;
+			border-collapse: collapse;
+			text-align: center;
+		}
+		div.main{
+			top: 0%;
+			width: 80%;
+			left: 10%;
+			right: 10%;
+			background-color: rgba(0,0,0,0.85);
+			
+			padding-top: 20px;
+			padding-right: 20px;
+			padding-bottom: 20px;
+			padding-left: 20px;
+			
+			position: absolute;
+		}
+		
+		div.game{
+			width: 800px;
+			height: 600px;
+			padding: 10px;			
+			opacity: 1;
+		}
+		div.info{
+			width: 250px;
+			height: 500px;
+			background-color: white;
+			float: right;
+			color: black;
+			
+			padding-top: 5px;
+			padding-right: 5px;
+			padding-bottom: 5px;
+			padding-left: 5px;
+		}
+		
+		
+	</style>
+	  
+	<script src="jquery-3.1.1.min.js"></script>	
+	<script src="javascript.js"></script>
+      
+	</head>
+	<body>
+		
+		<div class="main">
+				<div class="game">
+					<h2>Simulação de propagação epidêmica </h2>
+					<canvas id="mycanvas" width="500" height="500"></canvas>
+					
+					<div class="info">						
+						<br>						
+						<span id="mouseCoord"></span>
+					</div>
+					
+				</div>
+				<button id="btnInicialiar" type="button">Inicializar array</button>
+		</div>
+	</body>
+</html>
