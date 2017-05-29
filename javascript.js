@@ -4,149 +4,145 @@ var
 canvas,
 ctx,
 message = "";
-
-var mapa ={
-	tamanhoPisoPixel: 8,
-	
-	largura: 1,
-	altura: 1,
-	proporcao: 2,
-	exibirLinhas: false,
-	pisos: []
-};
-
-var simulacao = {
-	qtdMosquito: 1
-};
-
-var mosquitos = [];
+//construtor do mapa
+function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
+	this.tamanhoPisoPixel = tamanhoPisoPixel;
+	this.qtdPxLargura = qtdPxLargura;
+	this.qtdPxAltura = qtdPxAltura;
+	this.exibirLinhas = exibirLinhas;
+	this.pisos = [];
+}
+var mapa = new Mapa(10, 50, 50, true);
 
 //SPRITESHEET DOS PISOS
-
-var sprite = new Image();
-sprite.src = "piso.png";
+var pisoSprite = new Image();
+pisoSprite.src = "piso.png";
 
 //TIPOS PISOS
-
-var mato = {
-	nome: "mato",
-	locationX: null,
-	locationY: null,
-	spriteX: 0,
-	spriteY: 0,
-	tamanhoX: mapa.tamanhoPisoPixel,
-	tamanhoY: mapa.tamanhoPisoPixel
-};
-var agua = {
-	nome: "agua",
-	locationX: null,
-	locationY: null,
-	spriteX: 8,
-	spriteY: 0,
-	tamanhoX: mapa.tamanhoPisoPixel,
-	tamanhoY: mapa.tamanhoPisoPixel
-};
-var rua = {
-	nome: "rua",
-	locationX: null,
-	locationY: null,
-	spriteX: 16,
-	spriteY: 0,
-	tamanhoX: mapa.tamanhoPisoPixel,
-	tamanhoY: mapa.tamanhoPisoPixel
-};
-var casa = {
-	nome: "casa",
-	locationX: null,
-	locationY: null,
-	spriteX: 24,
-	spriteY: 0,
-	tamanhoX: mapa.tamanhoPisoPixel,
-	tamanhoY: mapa.tamanhoPisoPixel
-};
-
-var tipoPiso = [];
-tipoPiso.push(mato, agua, rua, casa);
+//construtor do piso
+function Piso(nome, sx, sy, dx, dy, dWidth, dHeight) {
+	//valores fixos	
+    this.nome = nome;	
+	this.sWidth = 8;
+	this.sHeight = 8;
+	
+	//valores variaveis
+	this.sx = sx;
+	this.sy = sy;
+	this.dx = dx;
+	this.dy = dy;
+	this.dWidth = dWidth;
+	this.dHeight = dHeight;	
+}
+/*
+var mato = new Piso(pisoSprite, "mato", 0, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
+var agua = new Piso(pisoSprite, "agua", 8, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
+var rua = new Piso(pisoSprite, "rua", 16, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
+var casa = new Piso(pisoSprite, "casa", 24, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
+*/
 
 //FUNÇÕES
 
-function newPiso(nome, x, y){
-	var piso = {
-		nome: nome,
-		x: x,
-		y: y
-	};
-	return piso;
-}
-
 function teste(item){
-	console.log(item);
+	console.log(item.dx + " " + item.dy + " " + item.nome);
 }
 
 
 function iniciar(){
 	canvas = document.getElementById("mycanvas");
 	
-	canvas.width =  mapa.largura * mapa.tamanhoPisoPixel;
-	canvas.height = mapa.altura * mapa.tamanhoPisoPixel;
+	canvas.width =  mapa.qtdPxLargura * mapa.tamanhoPisoPixel;
+	canvas.height = mapa.qtdPxAltura * mapa.tamanhoPisoPixel;
 	
 	ctx = canvas.getContext("2d");
-
-
 	ctx.fillStyle = "black";
+	ctx.imageSmoothingEnabled = false;
 	//ctx.fillRect(0,0,150,75);
-	inicializarMapa();
+	
+	gerarMapa();
+	mapa.pisos.forEach(desenharPisos);
 }
 
-function inicializarMapa(){
 
-	var i = 1;
-	for(y = 1; y <= mapa.altura; y+= mapa.tamanhoPisoPixel){
-		for(x = 1; x <= mapa.largura; x+= mapa.tamanhoPisoPixel){
+
+function gerarMapa(){
+	var altura = mapa.qtdPxAltura;
+	var largura = mapa.qtdPxLargura;
+	var tamanhoPiso = mapa.tamanhoPisoPixel;
+	
+	for(y = 0; y <= altura-1; y++){
+		for(x = 0; x <= largura-1; x++){
+			//20% chance do piso ser agua e 80% de ser mato
+			if(randomIntFromInterval(0, 9) <= 1){
+				var agua = new Piso("agua", 8, 0, null, null, tamanhoPiso, tamanhoPiso);
+				agua.dx = x;
+				agua.dy = y;
+				mapa.pisos.push(agua);	
+			}			
+			else{
+				var mato = new Piso("mato", 0, 0, null, null, tamanhoPiso, tamanhoPiso);
+				mato.dx = x;
+				mato.dy = y;
+				mapa.pisos.push(mato);
+			}
+		}
+	}
+}
+
+/*
+function desenharMapa(){
+	
+	var alturaTotalMapa = mapa.qtdPxAltura * mapa.tamanhoPisoPixel;
+	var larguraTotalMapa = mapa.qtdPxLargura * mapa.tamanhoPisoPixel;
+	var tamanhoPisoPixel = mapa.tamanhoPisoPixel;
+	var i = 0
+	for(y = 0; y <= alturaTotalMapa; x += tamanhoPisoPixel){
+		for(x = 0; x <= larguraTotalMapa; y += tamanhoPisoPixel){
 			
-			var piso = tipoPiso[randomNumber(0,3)];
-			piso.locationX = x;
-			piso.locationY = y;
-
-			mapa.pisos[i] = piso;
-			//console.log(mapa.pisos[i]);
+			var sx = mapa.pisos[i].sx;
+			var sy = mapa.pisos[i].sy;
+			var sWidth = mapa.pisos[i].sWidth;
+			var sHeight = mapa.pisos[i].sHeight;
+			var dx = mapa.pisos[i].dx * tamanhoPisoPixel;
+			var dy = mapa.pisos[i].dy * tamanhoPisoPixel;
+			var dWidth = mapa.pisos[i].dWidth;
+			var dHeight = mapa.pisos[i].dHeight;
+			
+			ctx.drawImage(
+				pisoSprite,
+				sx,
+				sy,
+				sWidth,
+				sHeight,
+				dx,
+				dy,
+				dWidth,
+				dHeight
+			)
 			i++;
 		}
 	}
 	
-	/*for(i = 1; i <= mapa.altura * mapa.largura; i++){
-		console.log(mapa.pisos[i]);
-	}*/
-	mapa.pisos.forEach(teste);
+	//mapa.pisos.forEach(desenharPisos);
 	
 }
+*/
 
-function desenharMapa(){
-	var qtdPiso = mapa.largura * mapa.altura;
+function desenharPisos(item){
+	//ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+	var tamanhoPisoPixel = mapa.tamanhoPisoPixel;
 	
-	for(i = 1; i <= qtdPiso; i++){
-		ctx.drawImage(
-		sprite,
-		mapa.pisos[i].spriteX,
-		mapa.pisos[i].spriteY,
-		mapa.pisos[i].tamanhoX,
-		mapa.pisos[i].tamanhoY,
-		mapa.pisos[i].locationX,
-		mapa.pisos[i].locationY,
-		mapa.tamanhoPisoPixel,
-		mapa.tamanhoPisoPixel
-		);
-	}
-	
-	//mapa.pisos.forEach(desenharPiso);
-}
-
-function inicializarMosquito(){
-
-	for(y = 1; y <= mapa.altura; y++){
-		mapa.pisos.push(newPiso( null, "azul", x, y));
-	}
-	mapa.pisos.forEach(teste);
+	ctx.drawImage(
+		pisoSprite,
+		item.sx,
+		item.sy,
+		item.sWidth,
+		item.sHeight,
+		item.dx * tamanhoPisoPixel,
+		item.dy * tamanhoPisoPixel,
+		item.dWidth,
+		item.dHeight
+	);
 }
 
 //FUNÇÕES MATEMATICAS
@@ -184,7 +180,8 @@ $(document).ready(function(){
 	iniciar();
 
 	$("#btnDesenhar").click(function(){
-		desenharMapa();
+		gerarMapa();
+		mapa.pisos.forEach(desenharPisos);
     });
 
 
