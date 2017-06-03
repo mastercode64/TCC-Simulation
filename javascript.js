@@ -11,17 +11,21 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 	this.qtdPxAltura = qtdPxAltura;
 	this.exibirLinhas = exibirLinhas;
 	this.pisos = [];
+	this.mosquitos = [];
 }
 var mapa = new Mapa(10, 50, 50, true);
 
 //SPRITESHEET DOS PISOS
 var pisoSprite = new Image();
 pisoSprite.src = "piso.png";
+var pisoMosquito = new Image();
+pisoMosquito.src = "mosquito.png"
 
 //TIPOS PISOS
 //construtor do piso
 function Piso(nome, sx, sy, dx, dy, dWidth, dHeight) {
-	//valores fixos	
+	//valores fixos
+	this.pisoInfectado = false;
     this.nome = nome;	
 	this.sWidth = 8;
 	this.sHeight = 8;
@@ -33,6 +37,13 @@ function Piso(nome, sx, sy, dx, dy, dWidth, dHeight) {
 	this.dy = dy;
 	this.dWidth = dWidth;
 	this.dHeight = dHeight;	
+}
+
+function Mosquito(x, y, infectado, movimentoRestante){
+	this.x = x;
+	this.y = y;
+	this.infectado = infectado;
+	this.movimentoRestante = movimentoRestante;
 }
 /*
 var mato = new Piso(pisoSprite, "mato", 0, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
@@ -77,7 +88,7 @@ function gerarMapa(){
 				var agua = new Piso("agua", 8, 0, null, null, tamanhoPiso, tamanhoPiso);
 				agua.dx = x;
 				agua.dy = y;
-				mapa.pisos.push(agua);	
+				mapa.pisos.push(agua);				
 			}			
 			else{
 				var mato = new Piso("mato", 0, 0, null, null, tamanhoPiso, tamanhoPiso);
@@ -89,42 +100,11 @@ function gerarMapa(){
 	}
 }
 
+//60% chance de aparecer mosquito no piso agua
 /*
-function desenharMapa(){
-	
-	var alturaTotalMapa = mapa.qtdPxAltura * mapa.tamanhoPisoPixel;
-	var larguraTotalMapa = mapa.qtdPxLargura * mapa.tamanhoPisoPixel;
-	var tamanhoPisoPixel = mapa.tamanhoPisoPixel;
-	var i = 0
-	for(y = 0; y <= alturaTotalMapa; x += tamanhoPisoPixel){
-		for(x = 0; x <= larguraTotalMapa; y += tamanhoPisoPixel){
-			
-			var sx = mapa.pisos[i].sx;
-			var sy = mapa.pisos[i].sy;
-			var sWidth = mapa.pisos[i].sWidth;
-			var sHeight = mapa.pisos[i].sHeight;
-			var dx = mapa.pisos[i].dx * tamanhoPisoPixel;
-			var dy = mapa.pisos[i].dy * tamanhoPisoPixel;
-			var dWidth = mapa.pisos[i].dWidth;
-			var dHeight = mapa.pisos[i].dHeight;
-			
-			ctx.drawImage(
-				pisoSprite,
-				sx,
-				sy,
-				sWidth,
-				sHeight,
-				dx,
-				dy,
-				dWidth,
-				dHeight
-			)
-			i++;
-		}
-	}
-	
-	//mapa.pisos.forEach(desenharPisos);
-	
+if(randomIntFromInterval(0, 9) <= 5){
+	var mosquito = new Mosquito(x, y, false, 5);
+	mapa.mosquitos.push(mosquito);
 }
 */
 
@@ -143,6 +123,22 @@ function desenharPisos(item){
 		item.dWidth,
 		item.dHeight
 	);
+	
+	if(item.pisoInfectado == true){
+		ctx.drawImage(
+			pisoMosquito,
+			0,
+			0,
+			item.sWidth,
+			item.sHeight,
+			item.dx * tamanhoPisoPixel,
+			item.dy * tamanhoPisoPixel,
+			item.dWidth,
+			item.dHeight
+		);
+	}
+	
+
 }
 
 //FUNÇÕES MATEMATICAS
