@@ -1,83 +1,102 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-   
-	<style>
-		body{
-			font-family: verdana;
-			font-style: normal;
-			color: white;
-		}
-		
-		#mycanvas{
-			border:1px solid red;
-			float: left;
-		}
-		
-		#mytable, #mytable tr, td {
-			background-color: yellow;
-			border: 1px solid black;
-			border-collapse: collapse;
-			text-align: center;
-		}
-		div.main{
-			top: 0%;
-			width: 80%;
-			left: 10%;
-			right: 10%;
-			background-color: rgba(0,0,0,0.85);
-			
-			padding-top: 20px;
-			padding-right: 20px;
-			padding-bottom: 20px;
-			padding-left: 20px;
-			
-			position: absolute;
-		}
-		/*
-		div.game{
-			width: 800px;
-			height: 600px;
-			padding: 10px;			
-			opacity: 1;
-		}
-		*/
-		div.info{
-			width: 250px;
-			height: 500px;
-			background-color: gray;
-			float: right;
-			color: black;
-			
-			padding-top: 5px;
-			padding-right: 5px;
-			padding-bottom: 5px;
-			padding-left: 5px;
-		}
-		
-		
-	</style>
-	  
-	<script src="jquery-3.1.1.min.js"></script>	
-	<script src="javascript.js"></script>
-      
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<!-- Bootstrap -->
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<script src="jquery-3.1.1.min.js"></script>	
+		<script src="simulation.js"></script>
 	</head>
 	<body>
-		
-		<div class="main">
-				<div class="game">
-					<h2>Simulação de propagação epidêmica </h2>
+		<div class="container">
+			<div class="page-header">
+				<h1>Simulação de propagação epidêmica usando autômato celular</h1>
+				<p class="lead">
+					Projeto TCC - Ciência da Computação - Uninove
+					<br>
+					Autores: <strong>Marcos Fujihashi</strong> e <strong>Plínio Oliveira</strong>
+				</p>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
 					<canvas id="mycanvas"></canvas>
-					
-					<div class="info">						
-						<br>						
-						<span value = mapa.geracao>teste</span>
-						<button id="btnRandom" type="button">Gerar Aleatorio</button>
-						<button id="btnProxGen" type="button">Proxima geração</button>
-					</div>
-					
 				</div>
-				
+				<div class="col-md-3">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+							<h2 class="panel-title">Controles</h2>
+						</div>
+						<div class="panel-body">
+							<p>
+								<button id="btnRandom" type="button" class="btn btn-primary">Gerar Aleatorio</button>
+								<button id="btnProxGen" type="button" class="btn btn-primary">Proxima geração</button>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="panel panel-danger">
+						<div class="panel-heading">
+							<h2 class="panel-title">Parâmetros e Configurações</h2>
+						</div>
+						<div class="panel-body">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon1">% Piso agua inicial</span>
+								<input type="number" class="form-control" placeholder="0~100%" aria-describedby="basic-addon1">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h2 class="panel-title">Objetivo</h2>
+						</div>
+						<div class="panel-body">
+							<p>O objetivo deste trabalho é criar um autômato celular alternativo
+								utilizando as regras de interação e propagação dos
+								<a target="_blank" href="https://en.wikipedia.org/wiki/Epidemic_model">modelos	epidêmicos</a>
+								para gerar uma simulação
+								exibindo os comportamentos de uma doença genérica.
+							</p>
+						</div>
+					</div>
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h2 class="panel-title">Oque é Autômato Celular?</h2>
+						</div>
+						<div class="panel-body">
+							<p>Os <a target="_blank" href="https://en.wikipedia.org/wiki/Cellular_automaton">autômatos celulares</a> (AC) são modelos computacionais capazes de simular
+								fenômenos e <a target="_blank" href="https://en.wikipedia.org/wiki/Pattern">padrões presentes na natureza</a>, biologia e física.
+								Um exemplo de autômato celular é o <a target="_blank" href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Jogo da Vida</a>, proposto pelo
+								matemático britânico <strong>John Horton Conway</strong> (Gardner, 1970) capaz de
+								simular o comportamento e "evolução" das células, tais comportamentos
+								são determinados por dois estados iniciais, sendo eles: vivo ou morto,
+								seguindo quatro regras básicas de interação com as células vizinhas.
+								Outra aplicação do autômato celular é usá-lo para estudar
+								e simular <a target="_blank" href="https://en.wikipedia.org/wiki/Complex_systems">sistemas complexos</a>.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
+		<footer class="footer">
+			<div class="container">
+				<p>
+					Projetado e construído por Marcos Fujihashi
+				</p>
+			</div>
+		</footer>
+		<script src="js/bootstrap.min.js"></script>
 	</body>
 </html>
