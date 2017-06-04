@@ -11,9 +11,118 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 	this.qtdPxAltura = qtdPxAltura;
 	this.exibirLinhas = exibirLinhas;
 	this.pisos = [];
+	this.pisosNext = [];
 	this.mosquitos = [];
+	
+	//Organiza os pisos 'agua', 'mato' pelo mapa usando automato celular
+	
+	this.gerarProxIteracao = function () {
+		this.pisosNext = [];
+		var altura = mapa.qtdPxAltura;
+		var largura = mapa.qtdPxLargura;
+		var tamanhoPiso = mapa.tamanhoPisoPixel;
+		
+        for(y = 0; y <= altura-1; y++){
+			for(x = 0; x <= largura-1; x++){
+				
+				var posicaoPiso = (y * this.qtdPxLargura) + x;				
+				//piso tipo agua				
+				if(this.pisos[posicaoPiso].nome === "agua"){					
+					if(this.visinhosPiso("agua", x, y) <= 2)						
+						this.pisosNext.push(criarMato(x, y));
+					else if(this.visinhosPiso("agua", x, y) >= 3)
+						this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];				
+				}
+				else if(this.pisos[posicaoPiso].nome === "mato"){
+					if(this.visinhosPiso("agua", x, y) >= 4)
+						this.pisosNext.push(criarAgua(x,y));
+					else						
+						this.pisosNext.push(criarMato(x, y));							
+				}
+			}
+		}		
+		this.pisos = this.pisosNext;
+    }
+	
+	this.visinhosPiso = function(nomePiso, x, y){
+		var n = this.pisoNorteExiste(x, y);
+		var s = this.pisoSulExiste(x, y);
+		var l = this.pisoLesteExiste(x, y);
+		var o = this.pisoOesteExiste(x, y);		
+		var ne = this.pisoNordesteExiste(x, y);
+		var se = this.pisoSudesteExiste(x, y);
+		var so = this.pisoSudoesteExiste(x, y);
+		var no = this.pisoNoroesteExiste(x, y);		
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		var numVisinhos = 0;		
+		if(n && this.pisos[posicaoPiso - this.qtdPxLargura].nome === nomePiso)
+			numVisinhos++;
+		if(s && this.pisos[posicaoPiso + this.qtdPxLargura].nome === nomePiso)
+			numVisinhos++;
+		if(l && this.pisos[posicaoPiso + 1].nome === nomePiso)
+			numVisinhos++;
+		if(o && this.pisos[posicaoPiso - 1].nome == nomePiso)
+			numVisinhos++;
+		if(ne && this.pisos[posicaoPiso - (this.qtdPxLargura - 1)].nome == nomePiso)
+			numVisinhos++;
+		if(se && this.pisos[posicaoPiso + (this.qtdPxLargura + 1)].nome == nomePiso)
+			numVisinhos++;
+		if(so && this.pisos[posicaoPiso + (this.qtdPxLargura - 1)].nome == nomePiso)
+			numVisinhos++;
+		if(no && this.pisos[posicaoPiso - (this.qtdPxLargura + 1)].nome == nomePiso)
+			numVisinhos++;		
+		return numVisinhos;
+	}
+	this.pisoNorteExiste = function(x, y){
+		if(y <= 0 || x < 0 || x > this.qtdPxLargura - 1)
+			return false;
+		else
+			return true;
+	}	
+	this.pisoSulExiste = function(x, y){
+		if(y >= this.qtdPxAltura - 1 || x < 0 || x > this.qtdPxLargura - 1)
+			return false;
+		else
+			return true;
+	}
+	this.pisoLesteExiste = function(x, y){
+		if(x >= this.qtdPxLargura - 1 || y < 0 || y > this.qtdPxAltura - 1)
+			return false;
+		else
+			return true;
+	}
+	this.pisoOesteExiste = function(x, y){
+		if(x <= 0 || y < 0 || y > this.qtdPxAltura - 1)
+			return false;
+		else
+			return true;
+	}
+	this.pisoNordesteExiste = function(x, y){
+		if(x >= this.qtdPxLargura - 1 || y <= 0)
+			return false;
+		else
+			return true;
+	}
+	this.pisoSudesteExiste = function(x, y){
+		if(x >= this.qtdPxLargura - 1 || y >= this.qtdPxAltura - 1)
+			return false;
+		else
+			return true;
+	}
+	this.pisoSudoesteExiste = function(x, y){
+		if(x <= 0 || y >= this.qtdPxAltura - 1)
+			return false;
+		else
+			return true;
+	}
+	this.pisoNoroesteExiste = function(x, y){
+		if(x <= 0 || y <= 0)
+			return false;
+		else
+			return true;
+	}
 }
-var mapa = new Mapa(10, 50, 50, true);
+var mapa = new Mapa(5, 150, 150, true);
 
 //SPRITESHEET DOS PISOS
 var pisoSprite = new Image();
@@ -38,6 +147,18 @@ function Piso(nome, sx, sy, dx, dy, dWidth, dHeight) {
 	this.dWidth = dWidth;
 	this.dHeight = dHeight;	
 }
+function criarMato(x, y){
+	return new Piso("mato", 0, 0, x, y, mapa.tamanhoPisoPixel, mapa.tamanhoPisoPixel);	
+}
+function criarAgua(x, y){
+	return new Piso("agua", 8, 0, x, y, mapa.tamanhoPisoPixel, mapa.tamanhoPisoPixel);
+}
+function criarRua(x, y){
+	return new Piso("rua", 16, 0, x, y, mapa.tamanhoPisoPixel, mapa.tamanhoPisoPixel);
+}
+function criarCasa(x, y){
+	return new Piso("casa", 24, 0, x, y, mapa.tamanhoPisoPixel, mapa.tamanhoPisoPixel);
+}
 
 function Mosquito(x, y, infectado, movimentoRestante){
 	this.x = x;
@@ -45,19 +166,12 @@ function Mosquito(x, y, infectado, movimentoRestante){
 	this.infectado = infectado;
 	this.movimentoRestante = movimentoRestante;
 }
-/*
-var mato = new Piso(pisoSprite, "mato", 0, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
-var agua = new Piso(pisoSprite, "agua", 8, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
-var rua = new Piso(pisoSprite, "rua", 16, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
-var casa = new Piso(pisoSprite, "casa", 24, 0, null, null, mapa.qtdPxLargura, Mapa.qtdPxAltura);
-*/
 
 //FUNÇÕES
 
 function teste(item){
 	console.log(item.dx + " " + item.dy + " " + item.nome);
 }
-
 
 function iniciar(){
 	canvas = document.getElementById("mycanvas");
@@ -74,12 +188,12 @@ function iniciar(){
 	mapa.pisos.forEach(desenharPisos);
 }
 
-
-
 function gerarMapa(){
 	var altura = mapa.qtdPxAltura;
 	var largura = mapa.qtdPxLargura;
 	var tamanhoPiso = mapa.tamanhoPisoPixel;
+	
+	mapa.pisos = [];
 	
 	for(y = 0; y <= altura-1; y++){
 		for(x = 0; x <= largura-1; x++){
@@ -175,8 +289,12 @@ $(document).ready(function(){
 
 	iniciar();
 
-	$("#btnDesenhar").click(function(){
+	$("#btnRandom").click(function(){
 		gerarMapa();
+		mapa.pisos.forEach(desenharPisos);
+    });
+	$("#btnProxGen").click(function(){
+		mapa.gerarProxIteracao();
 		mapa.pisos.forEach(desenharPisos);
     });
 
