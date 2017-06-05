@@ -14,6 +14,9 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 	this.pisosNext = [];
 	this.mosquitos = [];
 	this.geracao = 0;
+	this.chanceCruzamentoRua = 3;
+	this.chanceCasa = 15;
+	this.chanceAgua = 18;
 	
 	//Organiza os pisos 'agua', 'mato' pelo mapa usando automato celular
 	
@@ -35,32 +38,132 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 						this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];				
 				}
 				//MATO
-				else if(this.pisos[posicaoPiso].nome === "mato"){
+				else if(this.pisos[posicaoPiso].nome === "mato"){					
+					
 					if(this.visinhosPiso("agua", x, y) >= 4)
-						this.pisosNext.push(criarAgua(x,y));	
+						this.pisosNext.push(criarAgua(x,y));
 					
-					else if(this.piso2Norte("rua", x, y))
-						this.pisosNext.push(criarRua(x,y));
+					else if(this.piso2Norte("rua", x, y)){
+						if(!this.piso1Nordeste("rua",x, y) && this.piso1Noroeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];						
+						else if(this.piso1Nordeste("rua",x, y) && !this.piso1Noroeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];						
+						else if(this.piso1Nordeste("rua",x, y) && this.piso1Noroeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else
+							this.pisosNext.push(criarRua(x,y));	
+					}
+
+					else if(this.piso2Sul("rua", x, y)){
+						if(!this.piso1Sudeste("rua",x, y) && this.piso1Sudoeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else if(this.piso1Sudeste("rua",x, y) && !this.piso1Sudoeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else if(this.piso1Sudeste("rua",x, y) && this.piso1Sudoeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else
+							this.pisosNext.push(criarRua(x,y));
+					}						
 					
-					else if(this.piso2Sul("rua", x, y))
-						this.pisosNext.push(criarRua(x,y));
+					else if(this.piso2Leste("rua", x, y)){
+						if(this.piso1Sudeste("rua",x, y) && !this.piso1Nordeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else if(!this.piso1Sudeste("rua",x, y) && this.piso1Nordeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else if(this.piso1Sudeste("rua",x, y) && this.piso1Nordeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else
+							this.pisosNext.push(criarRua(x,y));
+					}						
 					
-					else if(this.piso2Leste("rua", x, y))
-						this.pisosNext.push(criarRua(x,y));
+					else if(this.piso2Oeste("rua", x, y)){
+						if(!this.piso1Noroeste("rua",x, y) && this.piso1Sudoeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else if(this.piso1Noroeste("rua",x, y) && !this.piso1Sudoeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else if(this.piso1Noroeste("rua",x, y) && this.piso1Sudoeste("rua", x, y))
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+						else
+							this.pisosNext.push(criarRua(x,y));
+					}						
 					
-					else if(this.piso2Oeste("rua", x, y))
-						this.pisosNext.push(criarRua(x,y));		
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Oeste("rua" , x, y) && this.piso1Noroeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Norte("rua" , x, y) && this.piso1Noroeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Norte("rua" , x, y) && this.piso1Nordeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Leste("rua" , x, y) && this.piso1Nordeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Leste("rua" , x, y) && this.piso1Sudeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Sul("rua" , x, y) && this.piso1Sudeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Sul("rua" , x, y) && this.piso1Sudoeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("rua", x, y) == 2 && this.piso1Oeste("rua" , x, y) && this.piso1Sudoeste("rua" , x, y)){
+						if(randomIntFromInterval(0,100) <= this.chanceCruzamentoRua)
+							this.pisosNext.push(criarRua(x,y));
+						else
+							this.pisosNext.push(criarMato(x, y));
+					}
+					
+					else if(this.visinhosPiso("agua", x, y) == 0 && this.visinhosPiso("rua", x, y) == 1){
+						if(randomIntFromInterval(1,100) <= this.chanceCasa)
+							this.pisosNext.push(criarCasa(x,y));
+						else
+							this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+					}
+					
 					else
 						this.pisosNext.push(criarMato(x, y));
 					
 				}
 				//RUA
 				else if(this.pisos[posicaoPiso].nome === "rua"){
-					this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
+					if(this.visinhosPiso("rua", x, y) == 8){
+						this.pisosNext.push(criarMato(x,y));
+					}
+					else
+						this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
 				}
-				else{
-					this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];
-				}
+				else
+					this.pisosNext[posicaoPiso] = this.pisos[posicaoPiso];				
 			}
 		}		
 		this.pisos = this.pisosNext;
@@ -95,8 +198,7 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 		if(no && this.pisos[posicaoPiso - (this.qtdPxLargura + 1)].nome == nomePiso)
 			numVisinhos++;		
 		return numVisinhos;
-	}
-	
+	}	
 	this.piso2Norte = function(nomePiso, x, y){
 		var posicaoPiso = (y * this.qtdPxLargura) + x;
 		if(y <= 1)
@@ -104,6 +206,17 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 		else{
 			if(this.pisos[posicaoPiso - this.qtdPxLargura].nome === nomePiso &&
 			this.pisos[posicaoPiso - (this.qtdPxLargura * 2)].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}	
+	this.piso1Norte = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(y <= 0)
+			return false;
+		else{
+			if(this.pisos[posicaoPiso - this.qtdPxLargura].nome === nomePiso)
 				return true;
 			else
 				return false;
@@ -121,6 +234,17 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 				return false;
 		}
 	}	
+	this.piso1Sul = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(y >= this.qtdPxAltura - 1)
+			return false;
+		else{
+			if(this.pisos[posicaoPiso + this.qtdPxLargura].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}	
 	this.piso2Leste = function(nomePiso, x, y){
 		var posicaoPiso = (y * this.qtdPxLargura) + x;
 		if(x >= this.qtdPxLargura - 2)
@@ -128,6 +252,17 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 		else{
 			if(this.pisos[posicaoPiso + 1].nome === nomePiso &&
 			this.pisos[posicaoPiso + 2].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}
+	this.piso1Leste = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(x >= this.qtdPxLargura - 1)
+			return false;
+		else{
+			if(this.pisos[posicaoPiso + 1].nome === nomePiso)
 				return true;
 			else
 				return false;
@@ -140,6 +275,61 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 		else{
 			if(this.pisos[posicaoPiso - 1].nome === nomePiso &&
 			this.pisos[posicaoPiso - 2].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}	
+	this.piso1Oeste = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(x <= 0)
+			return false;
+		else{
+			if(this.pisos[posicaoPiso - 1].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}	
+	this.piso1Nordeste = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(y <= 0 || x >= this.qtdPxLargura - 1)
+			return false;
+		else{
+			if(this.pisos[(posicaoPiso - this.qtdPxLargura) + 1].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}	
+	this.piso1Sudeste = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(x >= this.qtdPxLargura - 1 || y >= this.qtdPxAltura - 1)
+			return false;
+		else{
+			if(this.pisos[(posicaoPiso + this.qtdPxLargura) + 1].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}	
+	this.piso1Sudoeste = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(x <= 0 || y >= this.qtdPxAltura - 1)
+			return false;
+		else{
+			if(this.pisos[(posicaoPiso + this.qtdPxLargura) - 1].nome === nomePiso)
+				return true;
+			else
+				return false;
+		}
+	}	
+	this.piso1Noroeste = function(nomePiso, x, y){
+		var posicaoPiso = (y * this.qtdPxLargura) + x;
+		if(y <= 0 || x <= 0)
+			return false;
+		else{
+			if(this.pisos[(posicaoPiso - this.qtdPxLargura) - 1].nome === nomePiso)
 				return true;
 			else
 				return false;
@@ -195,8 +385,7 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 	}
 }
 //var mapa = new Mapa(8, 130, 60, true);
-var mapa = new Mapa(5, 150, 70, true);
-
+var mapa = new Mapa(7, 130, 80, true);
 //SPRITESHEET DOS PISOS
 var pisoSprite = new Image();
 pisoSprite.src = "piso.png";
@@ -210,8 +399,7 @@ function Piso(nome, sx, sy, dx, dy, dWidth, dHeight) {
 	this.pisoInfectado = false;
     this.nome = nome;	
 	this.sWidth = 8;
-	this.sHeight = 8;
-	
+	this.sHeight = 8;	
 	//valores variaveis
 	this.sx = sx;
 	this.sy = sy;
@@ -241,22 +429,17 @@ function Mosquito(x, y, infectado, movimentoRestante){
 }
 
 //FUNÇÕES
-
 function teste(item){
 	console.log(item.dx + " " + item.dy + " " + item.nome);
 }
 
 function iniciar(){
-	canvas = document.getElementById("mycanvas");
-	
+	canvas = document.getElementById("mycanvas");	
 	canvas.width =  mapa.qtdPxLargura * mapa.tamanhoPisoPixel;
-	canvas.height = mapa.qtdPxAltura * mapa.tamanhoPisoPixel;
-	
+	canvas.height = mapa.qtdPxAltura * mapa.tamanhoPisoPixel;	
 	ctx = canvas.getContext("2d");
 	ctx.fillStyle = "black";
-	ctx.imageSmoothingEnabled = false;
-	//ctx.fillRect(0,0,150,75);
-	
+	ctx.imageSmoothingEnabled = false;	
 	gerarMapa();
 	mapa.pisos.forEach(desenharPisos);
 }
@@ -273,7 +456,7 @@ function gerarMapa(){
 	
 	for(y = 0; y <= altura-1; y++){
 		for(x = 0; x <= largura-1; x++){
-			//20% chance do piso ser agua e 80% de ser mato
+			
 			if(x == ruaX && y == ruaY - 1){
 				mapa.pisos.push(criarRua(x,y));
 				continue;
@@ -295,25 +478,12 @@ function gerarMapa(){
 				continue;
 			}
 			
-			if(randomIntFromInterval(0, 100) <= 18)
+			if(randomIntFromInterval(0, 100) <= mapa.chanceAgua)
 				mapa.pisos.push(criarAgua(x,y));					
 			else
 				mapa.pisos.push(criarMato(x, y));
 		}
 	}
-	/*
-	var posicaoPiso = (ruaY * this.qtdPxLargura) + ruaX;
-	this.pisos[posicaoPiso] = criarRua(ruaX, ruaY);
-	
-	mapa.pisos.push(criarRua(ruaX, ruaY + 1));
-	mapa.pisos.push(criarRua(ruaX, ruaY - 1));
-	mapa.pisos.push(criarRua(ruaX - 1, ruaY));
-	mapa.pisos.push(criarRua(ruaX + 1, ruaY));
-	*/
-}
-
-function criarRuas(){
-	
 }
 
 //60% chance de aparecer mosquito no piso agua
@@ -325,9 +495,7 @@ if(randomIntFromInterval(0, 9) <= 5){
 */
 
 function desenharPisos(item){
-	//ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
-	var tamanhoPisoPixel = mapa.tamanhoPisoPixel;
-	
+	var tamanhoPisoPixel = mapa.tamanhoPisoPixel;	
 	ctx.drawImage(
 		pisoSprite,
 		item.sx,
@@ -353,42 +521,14 @@ function desenharPisos(item){
 			item.dHeight
 		);
 	}
-	
-
 }
 
 //FUNÇÕES MATEMATICAS
-
 function randomIntFromInterval(min,max){
 	return Math.floor(Math.random()*(max-min+1)+min);
 }
-
-function isNumber(myNumber){
-	if(typeof myNumber == typeof 1)
-		return 'true';
-	else
-		return 'false';
-}
-
-function randomNumber(min,max){
-	return (Math.round((max-min) * Math.random() + min));
-}
-
-function createRandomArray(num_elements,min,max){
-	var nums = new Array;
-
-	for (var element=0; element<num_elements; element++) {
-		nums[element] = randomNumber(min,max);
-	}
-
-	return (nums);
-}
-
-
 // JQUERY
-
 $(document).ready(function(){
-
 	iniciar();
 
 	$("#btnRandom").click(function(){
@@ -399,6 +539,5 @@ $(document).ready(function(){
 		mapa.gerarProxIteracao();
 		mapa.pisos.forEach(desenharPisos);
     });
-
 
 });
