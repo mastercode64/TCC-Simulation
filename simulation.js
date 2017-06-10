@@ -385,7 +385,7 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 	}
 }
 //var mapa = new Mapa(8, 130, 60, true);
-var mapa = new Mapa(7, 130, 80, true);
+var mapa = new Mapa(8, 100, 70, true);
 //SPRITESHEET DOS PISOS
 var pisoSprite = new Image();
 pisoSprite.src = "piso.png";
@@ -523,6 +523,22 @@ function desenharPisos(item){
 	}
 }
 
+function automatico(){
+	mapa.gerarProxIteracao();
+	mapa.pisos.forEach(desenharPisos);
+}
+
+var refreshIntervalId;
+
+function iniciarAutomatico(){
+	refreshIntervalId = setInterval(function(){ automatico(); }, 40);
+	
+}
+
+function pararAutomatico(){
+	clearInterval(refreshIntervalId);
+}
+
 //FUNÇÕES MATEMATICAS
 function randomIntFromInterval(min,max){
 	return Math.floor(Math.random()*(max-min+1)+min);
@@ -530,10 +546,20 @@ function randomIntFromInterval(min,max){
 // JQUERY
 $(document).ready(function(){
 	iniciar();
+	$("#automaticoStatus").val("Modo Automatico: OFF");
 
 	$("#btnRandom").click(function(){
 		gerarMapa();
 		mapa.pisos.forEach(desenharPisos);
+    });
+	$("#btnIniciar").click(function(){
+		$("#automaticoStatus").val("Modo Automatico: ON");
+		iniciarAutomatico();
+		
+    });	
+	$("#btnParar").click(function(){
+		pararAutomatico();
+		$("#automaticoStatus").val("Modo Automatico: OFF");
     });
 	$("#btnProxGen").click(function(){
 		mapa.gerarProxIteracao();
