@@ -27,35 +27,38 @@
 				</p>
 			</div>
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-10">
 					<canvas id="mycanvas"></canvas>
 				</div>
-				<div class="col-md-3">
+				<div class="col-md-2">
 					<div class="panel panel-danger">
 						<div class="panel-heading">
 							<h2 class="panel-title">Controles</h2>
 						</div>
 						<div class="panel-body">
 							<p>
-								<button id="btnRandom" type="button" class="btn btn-primary">Gerar Aleatório</button>
+								<button id="btnRandom" type="button" class="btn-xs btn-primary">Gerar Aleatório</button>
 							</p>
 							<p>
-								<button id="btnProxGen" type="button" class="btn btn-primary">Proxima geração</button>
+								<button id="btnProxGen" type="button" class="btn-xs btn-primary">Proxima geração</button>
 							</p>
 							<p>
-								<button id="btnIniciar" type="button" class="btn btn-success">Gerar Automaticamente</button>
+								<button id="btnIniciar" type="button" class="btn-xs btn-success">Gerar Automaticamente</button>
 							</p>
 							<p>
-								<button id="btnParar" type="button" class="btn btn-success">Parar modo automatico</button>
+								<button id="btnParar" type="button" class="btn-xs btn-success">Parar modo automatico</button>
 							</p>
 							<p>
-								<button id="btnInfectarCasa" type="button" class="btn btn-danger">Definir primeiro infectado</button>
+								<button id="btnInfectarCasa" type="button" class="btn-xs btn-danger">Definir primeiro infectado</button>
 							</p>							
 							<p>
-								<button id="btnSimularPropagacao" type="button" class="btn btn-danger">Simular Propagação Epidêmica</button>
+								<button id="btnSimularPropagacao" type="button" class="btn-xs btn-danger">Simular Propagação Epidêmica</button>
 							</p>							
 							<p>
-								<button id="btnPararPropagacao" type="button" class="btn btn-danger">Parar Propagação Automatica</button>
+								<button id="btnPararPropagacao" type="button" class="btn-xs btn-danger">Parar Propagação Automatica</button>
+							</p>
+							<p>
+								<button id="btnRemoverMosquitos" type="button" class="btn-xs btn-danger">Remover Mosquitos</button>
 							</p>
 						</div>
 					</div>
@@ -67,8 +70,8 @@
 						</div>
 						<div class="panel-body">
 							<div class="input-group">
-								<span class="input-group-addon" id="basic-addon1">% Piso agua inicial</span>
-								<input type="number" class="form-control" placeholder="0~100%" aria-describedby="basic-addon1">
+								<span class="input-group-addon" id="basic-addon1">Geração</span>
+								<input type="text" id="geracao" class="form-control" aria-describedby="basic-addon1">
 							</div>
 														
 								<input id="automaticoStatus" type="text" readonly class="form-control">

@@ -21,6 +21,11 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 	this.chanceAgua = 18;
 	this.quantidadeCasa = 0;
 	
+	this.removerMosquitos = function(){
+		this.mosquitos = [];
+		this.mosquitosNext = [];
+	}
+	
 	this.listarMosquitos = function(){
 		for(var i = 0; i < this.mosquitos.length; i++){
 			console.log(this.mosquitos[i].x + " " + this.mosquitos[i].y);
@@ -88,10 +93,11 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 		}
 		console.log("Qtd casas infectadas: " + qtdCasasInfectadas);
 		*/
+		
 	}
 	
 	this.propagarVirus = function(){
-
+		$("#automaticoStatus").val("Modo Automatico: ON");
 		mosquitosNext = [];
 		//Passando para o array next somente mosquitos validos
 		this.mosquitos.forEach(function(item) {
@@ -159,6 +165,8 @@ function Mapa(tamanhoPisoPixel, qtdPxLargura, qtdPxAltura, exibirLinhas){
 			}	
 		});
 		this.mosquitos = this.mosquitosNext;
+		this.geracao++;
+		$("#geracao").val(this.geracao);
 	}
 	
 	this.qtdMosquitos = function(){
@@ -635,6 +643,7 @@ function gerarMapa(){
 	var ruaY = randomIntFromInterval(0, altura - 1);
 	
 	mapa.geracao = 0;
+	$("#geracao").val(mapa.geracao);
 	mapa.pisos = [];
 	mapa.mosquitos = [];
 	mapa.mosquitosNext = [];
@@ -789,6 +798,7 @@ $(document).ready(function(){
 	//GERAR CIDADE AUTOMATICAMENTE
 	$("#btnIniciar").click(function(){
 		$("#automaticoStatus").val("Modo Automatico: ON");
+		pararPropagacaoAutomatica();
 		iniciarAutomatico();
 		
     });	
@@ -808,12 +818,20 @@ $(document).ready(function(){
 	
 	//INICIAR PROPAGAÇÃO DO VIRUS AUTOMATICA
 	$("#btnSimularPropagacao").click(function(){
+		pararAutomatico();
 		iniciarPropagacaoAutomatica();		
     });
 	
 	//PARAR AUTOMATICO
 	$("#btnPararPropagacao").click(function(){
 		pararPropagacaoAutomatica();
+		$("#automaticoStatus").val("Modo Automatico: OFF");
+    });
+	
+	//REMOVER MOSQUITOS
+	$("#btnRemoverMosquitos").click(function(){
+		mapa.removerMosquitos();
+		mapa.pisos.forEach(desenharPisos);
     });
 
 });
